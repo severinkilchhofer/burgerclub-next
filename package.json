@@ -1,5 +1,5 @@
 {
-  "name": "learn-starter",
+  "name": "burgerclub-next",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -9,7 +9,12 @@
   },
   "dependencies": {
     "next": "^10.0.0",
+    "postcss-flexbugs-fixes": "^5.0.2",
+    "postcss-preset-env": "^6.7.0",
     "react": "17.0.1",
-    "react-dom": "17.0.1"
+    "react-dom": "17.0.1",
+    "tailwindcss": "^2.1.2",
+    "@notionhq/client": "latest",
+    "dotenv": "^8.2.0"
   }
 }
