@@ -1,16 +1,17 @@
 import Head from "next/head";
 import Link from "next/link";
-import { getDatabase } from "../lib/notion";
-import { Text } from "./[id].js";
+import {getDatabase} from "../lib/notion";
+import {Text} from "./[id].js";
 import styles from "../styles/index.module.css";
+import {Card} from "../components/card";
 
 export const databaseId = process.env.NOTION_DATABASE_ID;
 
-export default function Home({ posts }) {
+export default function Home({posts}) {
     return (
         <div>
             <Head>
-                <title>Notion Next.js blog</title>
+                <title>Burgerclub Zurich</title>
                 {/*<link rel="icon" href="/favicon.ico" />*/}
             </Head>
 
@@ -30,10 +31,17 @@ export default function Home({ posts }) {
                         </svg>
                     </div>
                     <h1>Burgerclub Zurich</h1>
+                    <p className="pt-8">Hier findest du die Besten Burger in Zürich,
+                        welche von einer Fachjury ausgezeichnet und bewertet wurden.
+
+                        Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt
+                        ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo
+                        dolores et ea rebum. Stet clita kasd gubergren, no sea takimata </p>
 
                 </header>
 
-                <h2 className={styles.heading}>All Posts</h2>
+                <h2 className="text-center pt-20">Restaurants</h2>
+
                 <ol className={styles.posts}>
                     {posts.map((post) => {
                         console.log(post);
@@ -46,20 +54,7 @@ export default function Home({ posts }) {
                             }
                         );
                         return (
-                            <li key={post.id} className={styles.post}>
-                                <h3 className={styles.postTitle}>
-                                    <Link href={`/${post.id}`}>
-                                        <a>
-                                            <Text text={post.properties.Restaurant.title} />
-                                        </a>
-                                    </Link>
-                                </h3>
-
-                                <p className={styles.postDescription}>{date}</p>
-                                <Link href={`/${post.id}`}>
-                                    <a> Read post →</a>
-                                </Link>
-                            </li>
+                            <Card key={post.id} post={post} date={date}/>
                         );
                     })}
                 </ol>

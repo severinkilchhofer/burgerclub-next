@@ -1,1 +1,6 @@
-This is a starter template for [Learn Next.js](https://nextjs.org/learn).
+##Start application
+
+`npm run dev`
+
+## Buld application
+`npm run build`

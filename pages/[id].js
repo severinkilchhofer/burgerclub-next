@@ -95,7 +95,7 @@ const renderBlock = (block) => {
 };
 
 export default function Post({ page, blocks }) {
-    console.log(page);
+    console.log("blocks", blocks);
     if (!page || !blocks) {
         return <div />;
     }
