@@ -40,11 +40,10 @@ export default function Home({posts}) {
 
                 </header>
 
-                <h2 className="text-center pt-20">Restaurants</h2>
+                <h2 className="text-center pt-20 mb-12">Restaurants</h2>
 
                 <ol className={styles.posts}>
                     {posts.map((post) => {
-                        console.log(post);
                         const date = new Date(post.last_edited_time).toLocaleString(
                             "en-US",
                             {
