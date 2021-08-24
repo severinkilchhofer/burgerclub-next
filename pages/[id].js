@@ -89,6 +89,13 @@ const renderBlock = (block) => {
             );
         case "child_page":
             return <p>{value.title}</p>;
+        case "unsupported":
+            // TODO: remove unsupported when Notion API images are working
+            return (
+                <p>
+                    {block.image ? <img src={block.image ? block.image.file.url : ''} alt="Image"/> : ''}
+                </p>
+            );
         default:
             return ``;
     }
@@ -106,8 +113,8 @@ export default function Post({ page, blocks }) {
                 {/*<link rel="icon" href="/favicon.ico" />*/}
             </Head>
 
-            <article className={styles.container}>
-                <h1 className={styles.name}>
+            <article className="container mx-auto px-4 sm:px-16 md:px-32 lg:px-64 max-w-7xl">
+                <h1 className="py-32">
                     <Text text={page.properties.Restaurant.title} />
                 </h1>
                 <section>
@@ -115,7 +122,7 @@ export default function Post({ page, blocks }) {
                         <Fragment key={block.id}>{renderBlock(block)}</Fragment>
                     ))}
                     <Link href="/">
-                        <a className={styles.back}>← Go home</a>
+                        <a className="block py-8">← Übersicht</a>
                     </Link>
                 </section>
             </article>

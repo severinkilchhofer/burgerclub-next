@@ -1,7 +1,5 @@
 import Head from "next/head";
-import Link from "next/link";
 import {getDatabase} from "../lib/notion";
-import {Text} from "./[id].js";
 import styles from "../styles/index.module.css";
 import {Card} from "../components/card";
 
@@ -15,7 +13,7 @@ export default function Home({posts}) {
                 {/*<link rel="icon" href="/favicon.ico" />*/}
             </Head>
 
-            <main className={styles.container}>
+            <main className="container mx-auto px-4 sm:px-16 md:px-32 lg:px-64 max-w-7xl">
                 <header className={styles.header}>
                     <div className={styles.logos}>
                         <svg
@@ -42,15 +40,16 @@ export default function Home({posts}) {
 
                 <h2 className="text-center pt-20 mb-12">Restaurants</h2>
 
-                <ol className={styles.posts}>
+                <ol className="container max-w-2xl m-auto">
                     {posts.map((post) => {
-                        const date = new Date(post.last_edited_time).toLocaleString(
-                            "en-US",
+                        console.log(post)
+                        const date = new Date(post.created_time).toLocaleString(
+                            "de-DE",
                             {
-                                month: "short",
-                                day: "2-digit",
+                                month: "long",
                                 year: "numeric",
                             }
+                            // day: "2-digit",
                         );
                         return (
                             <Card key={post.id} post={post} date={date}/>
