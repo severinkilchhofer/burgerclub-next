@@ -89,12 +89,14 @@ const renderBlock = (block) => {
             );
         case "child_page":
             return <p>{value.title}</p>;
-        case "unsupported":
-            // TODO: remove unsupported when Notion API images are working
+        case "image":
+            const src = value.type === "external" ? value.external.url : value.file.url;
+            const caption = value.caption === [] ? value.caption[0].plain_text : "";
             return (
-                <p>
-                    {block.image ? <img src={block.image ? block.image.file.url : ''} alt="Image"/> : ''}
-                </p>
+                <figure>
+                    <img src={src} alt={caption} />
+                    {caption && <figcaption>{caption}</figcaption>}
+                </figure>
             );
         default:
             return ``;
@@ -114,7 +116,7 @@ export default function Post({ page, blocks }) {
             </Head>
 
             <article className="container mx-auto px-4 sm:px-16 md:px-32 lg:px-64 max-w-7xl">
-                <h1 className="py-32">
+                <h1 className="py-12 md:py-32">
                     <Text text={page.properties.Restaurant.title} />
                 </h1>
                 <section>
