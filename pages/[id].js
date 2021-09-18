@@ -104,7 +104,6 @@ const renderBlock = (block) => {
 };
 
 export default function Post({ page, blocks }) {
-    console.log("blocks", blocks);
     if (!page || !blocks) {
         return <div />;
     }
@@ -116,7 +115,7 @@ export default function Post({ page, blocks }) {
             </Head>
 
             <article className="container mx-auto px-4 sm:px-16 md:px-32 lg:px-64 max-w-7xl">
-                <h1 className="py-12 md:py-32">
+                <h1 className="pt-12 pb-4 md:pt-16">
                     <Text text={page.properties.Restaurant.title} />
                 </h1>
                 <section>
@@ -124,7 +123,7 @@ export default function Post({ page, blocks }) {
                         <Fragment key={block.id}>{renderBlock(block)}</Fragment>
                     ))}
                     <Link href="/">
-                        <a className="block py-8">← Übersicht</a>
+                        <a className="block py-8 font-display font-bold text-black">← Übersicht</a>
                     </Link>
                 </section>
             </article>

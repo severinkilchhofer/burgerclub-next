@@ -42,7 +42,6 @@ export default function Home({posts}) {
 
                 <ol className="container max-w-2xl m-auto">
                     {posts.map((post) => {
-                        console.log(post)
                         const date = new Date(post.created_time).toLocaleString(
                             "de-DE",
                             {
@@ -63,7 +62,6 @@ export default function Home({posts}) {
 
 export const getStaticProps = async () => {
     const database = await getDatabase(databaseId);
-    console.log(databaseId);
     return {
         props: {
             posts: database,
