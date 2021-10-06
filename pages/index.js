@@ -2,6 +2,7 @@ import Head from "next/head";
 import {getDatabase} from "../lib/notion";
 import styles from "../styles/index.module.css";
 import {Card} from "../components/card";
+import Link from "next/link";
 
 export const databaseId = process.env.NOTION_DATABASE_ID;
 
@@ -55,6 +56,9 @@ export default function Home({posts}) {
                         );
                     })}
                 </ol>
+                <div className="container max-w-2xl m-auto text-right pb-12">
+                    <Link href="/upload"><a> Bilder hochladen → </a></Link>
+                </div>
             </main>
         </div>
     );
