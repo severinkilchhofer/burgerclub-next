@@ -1,6 +1,11 @@
-##Start application
+# Burgerclub Zurich
+https://burgerclub-next.netlify.app/
+
+## Start application
+
+`npm install`
 
 `npm run dev`
 
-## Buld application
+## Build application
 `npm run build`
