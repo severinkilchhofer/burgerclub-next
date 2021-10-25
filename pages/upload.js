@@ -31,7 +31,7 @@ export default function upload() {
                         : ''}
                     <li>3. Zu Notion wechseln und einfügen als Embedded Image</li>
                 </ol>
-                <Link href="/"><a className="block py-8 font-display font-bold text-black">← Zurück zur Übersicht</a></Link>
+                <Link href="/"><a className="block py-8 font-bold text-black">← Zurück zur Übersicht</a></Link>
             </div>
         </div>
     );

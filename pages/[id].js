@@ -1,17 +1,17 @@
-import { Fragment } from "react";
-import Head from "next/head";
-import { getDatabase, getPage, getBlocks } from "../lib/notion";
+import {Fragment} from "react";
+import {getBlocks, getDatabase, getPage} from "../lib/notion";
 import Link from "next/link";
-import { databaseId } from "./index.js";
+import {databaseId} from "./index.js";
 import styles from "../styles/post.module.css";
+import Layout from "../components/layout";
 
-export const Text = ({ text }) => {
+export const Text = ({text}) => {
     if (!text) {
         return null;
     }
     return text.map((value) => {
         const {
-            annotations: { bold, code, color, italic, strikethrough, underline },
+            annotations: {bold, code, color, italic, strikethrough, underline},
             text,
         } = value;
         return (
@@ -23,7 +23,7 @@ export const Text = ({ text }) => {
                     strikethrough ? styles.strikethrough : "",
                     underline ? styles.underline : "",
                 ].join(" ")}
-                style={color !== "default" ? { color } : {}}
+                style={color !== "default" ? {color} : {}}
             >
         {text.link ? <a href={text.link.url}>{text.content}</a> : text.content}
       </span>
@@ -32,47 +32,47 @@ export const Text = ({ text }) => {
 };
 
 const renderBlock = (block) => {
-    const { type, id } = block;
+    const {type, id} = block;
     const value = block[type];
 
     switch (type) {
         case "paragraph":
             return (
                 <p>
-                    <Text text={value.text} />
+                    <Text text={value.text}/>
                 </p>
             );
         case "heading_1":
             return (
                 <h1>
-                    <Text text={value.text} />
+                    <Text text={value.text}/>
                 </h1>
             );
         case "heading_2":
             return (
                 <h2>
-                    <Text text={value.text} />
+                    <Text text={value.text}/>
                 </h2>
             );
         case "heading_3":
             return (
                 <h3>
-                    <Text text={value.text} />
+                    <Text text={value.text}/>
                 </h3>
             );
         case "bulleted_list_item":
         case "numbered_list_item":
             return (
                 <li>
-                    <Text text={value.text} />
+                    <Text text={value.text}/>
                 </li>
             );
         case "to_do":
             return (
                 <div>
                     <label htmlFor={id}>
-                        <input type="checkbox" id={id} defaultChecked={value.checked} />{" "}
-                        <Text text={value.text} />
+                        <input type="checkbox" id={id} defaultChecked={value.checked}/>{" "}
+                        <Text text={value.text}/>
                     </label>
                 </div>
             );
@@ -80,7 +80,7 @@ const renderBlock = (block) => {
             return (
                 <details>
                     <summary>
-                        <Text text={value.text} />
+                        <Text text={value.text}/>
                     </summary>
                     {value.children?.map((block) => (
                         <Fragment key={block.id}>{renderBlock(block)}</Fragment>
@@ -94,7 +94,7 @@ const renderBlock = (block) => {
             const caption = value.caption === [] ? value.caption[0].plain_text : "";
             return (
                 <figure>
-                    <img src={src} alt={caption} />
+                    <img src={src} alt={caption}/>
                     {caption && <figcaption>{caption}</figcaption>}
                 </figure>
             );
@@ -103,30 +103,27 @@ const renderBlock = (block) => {
     }
 };
 
-export default function Post({ page, blocks }) {
+export default function Post({page, blocks}) {
     if (!page || !blocks) {
-        return <div />;
+        return <div/>;
     }
     return (
         <div>
-            <Head>
-                <title>{page.properties.Restaurant.title[0].plain_text}</title>
-                {/*<link rel="icon" href="/favicon.ico" />*/}
-            </Head>
-
-            <article className="container mx-auto px-4 sm:px-16 md:px-32 lg:px-64 max-w-7xl">
-                <h1 className="pt-12 pb-4 md:pt-16">
-                    <Text text={page.properties.Restaurant.title} />
-                </h1>
-                <section>
-                    {blocks.map((block) => (
-                        <Fragment key={block.id}>{renderBlock(block)}</Fragment>
-                    ))}
-                    <Link href="/">
-                        <a className="block py-8 font-display font-bold text-black">← Übersicht</a>
-                    </Link>
-                </section>
-            </article>
+            <Layout title={page.properties.Restaurant.title[0].plain_text}>
+                <article className="container mx-auto px-4 sm:px-16 md:px-32 lg:px-64 max-w-7xl">
+                    <h1 className="pt-12 pb-4 md:pt-16">
+                        <Text text={page.properties.Restaurant.title}/>
+                    </h1>
+                    <section>
+                        {blocks.map((block) => (
+                            <Fragment key={block.id}>{renderBlock(block)}</Fragment>
+                        ))}
+                        <Link href="/">
+                            <a className="block py-8 font-display font-bold text-black">← Übersicht</a>
+                        </Link>
+                    </section>
+                </article>
+            </Layout>
         </div>
     );
 }
@@ -134,13 +131,13 @@ export default function Post({ page, blocks }) {
 export const getStaticPaths = async () => {
     const database = await getDatabase(databaseId);
     return {
-        paths: database.map((page) => ({ params: { id: page.id } })),
+        paths: database.map((page) => ({params: {id: page.id}})),
         fallback: true,
     };
 };
 
 export const getStaticProps = async (context) => {
-    const { id } = context.params;
+    const {id} = context.params;
     const page = await getPage(id);
     const blocks = await getBlocks(id);
 
