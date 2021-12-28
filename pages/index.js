@@ -3,9 +3,10 @@ import styles from "../styles/index.module.css";
 import {Card} from "../components/card";
 import Layout from "../components/layout";
 
-export const databaseId = process.env.NOTION_DATABASE_ID;
+export const RestaurantDatabaseId = process.env.NOTION_RESTAURANT_DATABASE_ID;
+export const BarDatabaseId = process.env.NOTION_BAR_DATABASE_ID;
 
-export default function Home({posts}) {
+export default function Home({restaurants, bars}) {
     return (
         <div>
             <Layout title={'Burgerclub Zurich'}>
@@ -32,8 +33,8 @@ export default function Home({posts}) {
                     <h2 className="text-center pt-20 mb-12">Restaurants</h2>
 
                     <ol className="container max-w-2xl m-auto">
-                        {posts.map((post) => {
-                            const date = new Date(post.created_time).toLocaleString(
+                        {restaurants.map((restaurant) => {
+                            const date = new Date(restaurant.created_time).toLocaleString(
                                 "de-DE",
                                 {
                                     month: "long",
@@ -42,7 +43,7 @@ export default function Home({posts}) {
                                 // day: "2-digit",
                             );
                             return (
-                                <Card key={post.id} post={post} date={date}/>
+                                <Card key={restaurant.id} restaurant={restaurant} date={date}/>
                             );
                         })}
                     </ol>
@@ -53,10 +54,12 @@ export default function Home({posts}) {
 }
 
 export const getStaticProps = async () => {
-    const database = await getDatabase(databaseId);
+    const restaurantDatabase = await getDatabase(RestaurantDatabaseId);
+    const barDatabase = await getDatabase(BarDatabaseId);
     return {
         props: {
-            posts: database,
+            restaurants: restaurantDatabase,
+            bars: barDatabase
         },
         revalidate: 1,
     };

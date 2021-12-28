@@ -1,7 +1,7 @@
 import {Fragment} from "react";
 import {getBlocks, getDatabase, getPage} from "../lib/notion";
 import Link from "next/link";
-import {databaseId} from "./index.js";
+import {BarDatabaseId, RestaurantDatabaseId} from "./index.js";
 import styles from "../styles/post.module.css";
 import Layout from "../components/layout";
 
@@ -103,21 +103,27 @@ const renderBlock = (block) => {
     }
 };
 
-export default function Post({page, blocks}) {
-    if (!page || !blocks) {
+export default function Post({restaurant, blocks, bar}) {
+    if (!restaurant || !blocks) {
         return <div/>;
     }
     return (
         <div>
-            <Layout title={page.properties.Restaurant.title[0].plain_text}>
+            <Layout title={restaurant.properties.Restaurant.title[0].plain_text}>
                 <article className="container mx-auto px-4 sm:px-16 md:px-32 lg:px-64 max-w-7xl">
                     <h1 className="pt-12 pb-4 md:pt-16">
-                        <Text text={page.properties.Restaurant.title}/>
+                        <Text text={restaurant.properties.Restaurant.title}/>
                     </h1>
+                    <p>
+                        Bar: <Text text={bar.properties.Name.title}/>
+                    </p>
                     <section>
                         {blocks.map((block) => (
                             <Fragment key={block.id}>{renderBlock(block)}</Fragment>
                         ))}
+                        <Link href="/">
+                            <a className="block py-8 font-display font-bold text-black">Bar</a>
+                        </Link>
                         <Link href="/">
                             <a className="block py-8 font-display font-bold text-black">← Übersicht</a>
                         </Link>
@@ -128,17 +134,21 @@ export default function Post({page, blocks}) {
     );
 }
 
-export const getStaticPaths = async () => {
-    const database = await getDatabase(databaseId);
+export async function getStaticPaths() {
+    const restaurantDatabase = await getDatabase(RestaurantDatabaseId);
     return {
-        paths: database.map((page) => ({params: {id: page.id}})),
-        fallback: true,
+        paths: restaurantDatabase.map((restaurant) => {
+            return {params: {id: restaurant.id}}
+        }),
+        fallback: false,
     };
-};
+}
 
 export const getStaticProps = async (context) => {
     const {id} = context.params;
-    const page = await getPage(id);
+    const restaurant = await getPage(id);
+    const barDatabase = await getDatabase(BarDatabaseId);
+    const bar = barDatabase.find(item => item.properties.Related_to_Restaurant.relation[0].id === restaurant.id)
     const blocks = await getBlocks(id);
 
     // Retrieve block children for nested blocks (one level deep), for example toggle blocks
@@ -165,7 +175,8 @@ export const getStaticProps = async (context) => {
 
     return {
         props: {
-            page,
+            restaurant,
+            bar,
             blocks: blocksWithChildren,
         },
         // Next.js will attempt to re-generate the page:
