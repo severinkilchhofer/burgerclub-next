@@ -1,5 +1,5 @@
 import Link from "next/link";
-import {Text} from "../pages/[id]";
+import {Text} from "./text";
 
 export const Card = ({restaurant, date}) => {
     return <Link href={`/${restaurant.id}`}>
