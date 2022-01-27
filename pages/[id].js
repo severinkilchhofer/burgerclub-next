@@ -1,172 +1,128 @@
+import {Swiper, SwiperSlide} from 'swiper/react';
+import React, {useState, useEffect} from 'react';
+import 'swiper/css';
+import 'swiper/css/navigation';
 import {Fragment} from "react";
 import {getBlocks, getDatabase, getPage} from "../lib/notion";
 import Link from "next/link";
-import {databaseId} from "./index.js";
-import styles from "../styles/post.module.css";
+import {BarDatabaseId, RestaurantDatabaseId} from "./index.js";
 import Layout from "../components/layout";
+import {Text} from "../components/text";
+import {renderBlock} from "../components/render-block";
+import SegmentedControl from "../components/segmentedcontrol";
 
-export const Text = ({text}) => {
-    if (!text) {
-        return null;
-    }
-    return text.map((value) => {
-        const {
-            annotations: {bold, code, color, italic, strikethrough, underline},
-            text,
-        } = value;
-        return (
-            <span
-                className={[
-                    bold ? styles.bold : "",
-                    code ? styles.code : "",
-                    italic ? styles.italic : "",
-                    strikethrough ? styles.strikethrough : "",
-                    underline ? styles.underline : "",
-                ].join(" ")}
-                style={color !== "default" ? {color} : {}}
-            >
-        {text.link ? <a href={text.link.url}>{text.content}</a> : text.content}
-      </span>
-        );
-    });
-};
+export default function Post({restaurant, restaurantBlocks, bar, barBlocks}) {
+    const items = ['Restaurant', 'Bar']
+    const [activeItem, setActiveitem] = useState(0)
+    const [swiper, setSwiper] = useState(null);
 
-const renderBlock = (block) => {
-    const {type, id} = block;
-    const value = block[type];
+    useEffect(() => {
+        if (swiper) {
+            swiper.slideTo(activeItem);
+        }
+    }, [swiper, activeItem]);
 
-    switch (type) {
-        case "paragraph":
-            return (
-                <p>
-                    <Text text={value.text}/>
-                </p>
-            );
-        case "heading_1":
-            return (
-                <h1>
-                    <Text text={value.text}/>
-                </h1>
-            );
-        case "heading_2":
-            return (
-                <h2>
-                    <Text text={value.text}/>
-                </h2>
-            );
-        case "heading_3":
-            return (
-                <h3>
-                    <Text text={value.text}/>
-                </h3>
-            );
-        case "bulleted_list_item":
-        case "numbered_list_item":
-            return (
-                <li>
-                    <Text text={value.text}/>
-                </li>
-            );
-        case "to_do":
-            return (
-                <div>
-                    <label htmlFor={id}>
-                        <input type="checkbox" id={id} defaultChecked={value.checked}/>{" "}
-                        <Text text={value.text}/>
-                    </label>
-                </div>
-            );
-        case "toggle":
-            return (
-                <details>
-                    <summary>
-                        <Text text={value.text}/>
-                    </summary>
-                    {value.children?.map((block) => (
-                        <Fragment key={block.id}>{renderBlock(block)}</Fragment>
-                    ))}
-                </details>
-            );
-        case "child_page":
-            return <p>{value.title}</p>;
-        case "image":
-            const src = value.type === "external" ? value.external.url : value.file.url;
-            const caption = value.caption === [] ? value.caption[0].plain_text : "";
-            return (
-                <figure>
-                    <img src={src} alt={caption}/>
-                    {caption && <figcaption>{caption}</figcaption>}
-                </figure>
-            );
-        default:
-            return ``;
-    }
-};
-
-export default function Post({page, blocks}) {
-    if (!page || !blocks) {
+    if (!restaurant || !restaurantBlocks) {
         return <div/>;
     }
     return (
         <div>
-            <Layout title={page.properties.Restaurant.title[0].plain_text}>
+            <Layout title={restaurant.properties.Restaurant.title[0].plain_text}>
+
                 <article className="container mx-auto px-4 sm:px-16 md:px-32 lg:px-64 max-w-7xl">
-                    <h1 className="pt-12 pb-4 md:pt-16">
-                        <Text text={page.properties.Restaurant.title}/>
-                    </h1>
-                    <section>
-                        {blocks.map((block) => (
-                            <Fragment key={block.id}>{renderBlock(block)}</Fragment>
-                        ))}
-                        <Link href="/">
-                            <a className="block py-8 font-display font-bold text-black">← Übersicht</a>
-                        </Link>
-                    </section>
+                    <SegmentedControl activeItem={activeItem}
+                                      setActiveitem={(activeIndex) => setActiveitem(activeIndex)}/>
+
+                    <div
+                        className="flex flex-row">
+                        <Swiper
+                            spaceBetween={100}
+                            slidesPerView={1}
+                            onSlideChange={(swiper) => setActiveitem(swiper.activeIndex)}
+                            onSwiper={(swiper) => setSwiper(swiper)}
+                        >
+                            <SwiperSlide className="swiper-button-next-unique">
+                                <section className=" w-full h-auto">
+                                    <h1 className="pt-12 pb-4 md:pt-16">
+                                        <Text text={restaurant.properties.Restaurant.title}/>
+                                    </h1>
+                                    {restaurantBlocks.map((block) => (
+                                        <Fragment key={block.id}>{renderBlock(block)}</Fragment>
+                                    ))}
+                                </section>
+                            </SwiperSlide>
+
+                            <SwiperSlide className="swiper-button-prev-unique">
+                                <section className="w-full h-auto">
+                                    <h1 className="pt-12 pb-4 md:pt-16">
+                                        <Text text={bar.properties.Name.title}/>
+                                    </h1>
+                                    {barBlocks.map((block) => (
+                                        <Fragment key={block.id}>{renderBlock(block)}</Fragment>
+                                    ))}
+                                </section>
+                            </SwiperSlide>
+                        </Swiper>
+
+                    </div>
+                    <Link href="/">
+                        <a className="block py-8 font-display font-bold text-black">← Übersicht</a>
+                    </Link>
                 </article>
             </Layout>
         </div>
     );
 }
 
-export const getStaticPaths = async () => {
-    const database = await getDatabase(databaseId);
+export async function getStaticPaths() {
+    const restaurantDatabase = await getDatabase(RestaurantDatabaseId);
     return {
-        paths: database.map((page) => ({params: {id: page.id}})),
-        fallback: true,
+        paths: restaurantDatabase.map((restaurant) => {
+            return {params: {id: restaurant.id}}
+        }),
+        fallback: false,
     };
-};
+}
 
 export const getStaticProps = async (context) => {
     const {id} = context.params;
-    const page = await getPage(id);
-    const blocks = await getBlocks(id);
+    const restaurant = await getPage(id);
+    const barDatabase = await getDatabase(BarDatabaseId);
+    const bar = barDatabase.find(item => item.properties.Related_to_Restaurant.relation[0].id === restaurant.id)
+    const restaurantBlocks = await getBlocks(id);
+    const barBlocks = await getBlocks(bar.id);
 
     // Retrieve block children for nested blocks (one level deep), for example toggle blocks
     // https://developers.notion.com/docs/working-with-page-content#reading-nested-blocks
-    const childBlocks = await Promise.all(
-        blocks
-            .filter((block) => block.has_children)
-            .map(async (block) => {
-                return {
-                    id: block.id,
-                    children: await getBlocks(block.id),
-                };
-            })
-    );
-    const blocksWithChildren = blocks.map((block) => {
-        // Add child blocks if the block should contain children but none exists
-        if (block.has_children && !block[block.type].children) {
-            block[block.type]["children"] = childBlocks.find(
-                (x) => x.id === block.id
-            )?.children;
-        }
-        return block;
-    });
+
+    async function receiveChildBlocks(blocks) {
+        const childBlocks = await Promise.all(
+            blocks
+                .filter((block) => block.has_children)
+                .map(async (block) => {
+                    return {
+                        id: block.id,
+                        children: await getBlocks(block.id),
+                    };
+                })
+        );
+        return blocks.map((block) => {
+            // Add child blocks if the block should contain children but none exists
+            if (block.has_children && !block[block.type].children) {
+                block[block.type]["children"] = childBlocks.find(
+                    (x) => x.id === block.id
+                )?.children;
+            }
+            return block;
+        });
+    }
 
     return {
         props: {
-            page,
-            blocks: blocksWithChildren,
+            restaurant,
+            bar,
+            restaurantBlocks: await receiveChildBlocks(restaurantBlocks),
+            barBlocks: await receiveChildBlocks(barBlocks),
         },
         // Next.js will attempt to re-generate the page:
         // - When a request comes in

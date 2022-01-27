@@ -21,12 +21,12 @@ body {
 
 
 h1 {
-    @apply font-display font-bold text-5xl md:text-6xl mb-4;
+    @apply font-display font-bold text-3xl md:text-6xl mb-0 md:mb-4;
     line-height: 1.25;
 }
 
 h1 span {
-    @apply font-display font-bold text-5xl md:text-6xl mb-4;
+    @apply font-display font-bold text-3xl md:text-6xl mb-0 md:mb-4;
     line-height: 1.25;
 }
 
