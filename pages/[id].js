@@ -1,5 +1,4 @@
 import {Swiper, SwiperSlide} from 'swiper/react';
-import {Navigation, Pagination} from 'swiper';
 import React, {useState, useEffect} from 'react';
 import 'swiper/css';
 import 'swiper/css/navigation';
@@ -11,8 +10,6 @@ import Layout from "../components/layout";
 import {Text} from "../components/text";
 import {renderBlock} from "../components/render-block";
 import SegmentedControl from "../components/segmentedcontrol";
-import {AnimateSharedLayout, motion} from "framer-motion";
-import styles from "../components/segmentedcontrol.module.css";
 
 export default function Post({restaurant, restaurantBlocks, bar, barBlocks}) {
     const items = ['Restaurant', 'Bar']
@@ -33,35 +30,13 @@ export default function Post({restaurant, restaurantBlocks, bar, barBlocks}) {
             <Layout title={restaurant.properties.Restaurant.title[0].plain_text}>
 
                 <article className="container mx-auto px-4 sm:px-16 md:px-32 lg:px-64 max-w-7xl">
-                    {/*<SegmentedControl/>*/}
-                    <AnimateSharedLayout>
-                        <div className="text-center pt-20">
-                            <ol className={styles.list}>
-                                {items.map((item, i) => {
-                                    const isActive = i === activeItem
-                                    return (
-                                        <motion.li
-                                            className={isActive || i === activeItem - 1 ? styles.itemNoDivider : styles.item}
-                                            whileTap={isActive ? {scale: 0.95} : {opacity: 0.6}}
-                                            key={item}
-                                        >
-                                            <button onClick={() => setActiveitem(i)} type="button"
-                                                    className={styles.button}>
-                                                {isActive && <motion.div layoutId="SegmentedControlActive"
-                                                                         className={styles.active}/>}
-                                                <span className={styles.label}>{item}</span>
-                                            </button>
-                                        </motion.li>
-                                    )
-                                })}
-                            </ol>
-                        </div>
-                    </AnimateSharedLayout>
+                    <SegmentedControl activeItem={activeItem}
+                                      setActiveitem={(activeIndex) => setActiveitem(activeIndex)}/>
 
                     <div
                         className="flex flex-row">
                         <Swiper
-                            spaceBetween={50}
+                            spaceBetween={100}
                             slidesPerView={1}
                             onSlideChange={(swiper) => setActiveitem(swiper.activeIndex)}
                             onSwiper={(swiper) => setSwiper(swiper)}
