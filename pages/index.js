@@ -2,6 +2,7 @@ import {getDatabase} from "../lib/notion";
 import styles from "../styles/index.module.css";
 import {Card} from "../components/card";
 import Layout from "../components/layout";
+import PreviousRestaurants from "../components/previous-restaurants";
 
 export const RestaurantDatabaseId = process.env.NOTION_RESTAURANT_DATABASE_ID;
 export const BarDatabaseId = process.env.NOTION_BAR_DATABASE_ID;
@@ -47,6 +48,7 @@ export default function Home({restaurants, bars}) {
                             );
                         })}
                     </ol>
+                    <PreviousRestaurants/>
                 </div>
             </Layout>
         </div>

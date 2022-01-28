@@ -36,7 +36,7 @@ export default function Post({restaurant, restaurantBlocks, bar, barBlocks}) {
                     <div
                         className="flex flex-row">
                         <Swiper
-                            spaceBetween={100}
+                            spaceBetween={75}
                             slidesPerView={1}
                             onSlideChange={(swiper) => setActiveitem(swiper.activeIndex)}
                             onSwiper={(swiper) => setSwiper(swiper)}

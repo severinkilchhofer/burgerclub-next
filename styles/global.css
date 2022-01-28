@@ -67,3 +67,7 @@ img {
 figure {
     @apply pb-4;
 }
+
+figure img {
+    @apply rounded-sm;
+}
