@@ -8,7 +8,7 @@ export default function Footer() {
                 <div>
                     <a href="https://github.com/severinkilchhofer/burgerclub-next" target="_blank"
                        className="text-right text-gray-100 cursor-pointer">Github →</a><br/>
-                    <Link href="/upload"><a className="text-gray-100"> Bilder hochladen → </a></Link>
+                    <Link href="/upload" className="text-gray-100"> Bilder hochladen →</Link>
                 </div>
             </div>
         </footer>
