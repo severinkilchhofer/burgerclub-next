@@ -9,32 +9,37 @@ export const renderBlock = (block) => {
         case "paragraph":
             return (
                 <p>
-                    <Text text={value.text}/>
+                    <Text text={value.rich_text}/>
                 </p>
             );
         case "heading_1":
             return (
                 <h1>
-                    <Text text={value.text}/>
+                    <Text text={value.rich_text}/>
                 </h1>
             );
         case "heading_2":
             return (
                 <h2>
-                    <Text text={value.text}/>
+                    <Text text={value.rich_text}/>
                 </h2>
             );
         case "heading_3":
             return (
                 <h3>
-                    <Text text={value.text}/>
+                    <Text text={value.rich_text}/>
                 </h3>
             );
         case "bulleted_list_item":
+            return (
+                <li>
+                    <Text text={value.rich_text}/>
+                </li>
+            );
         case "numbered_list_item":
             return (
                 <li>
-                    <Text text={value.text}/>
+                    <Text text={value.rich_text}/>
                 </li>
             );
         case "to_do":
@@ -42,7 +47,7 @@ export const renderBlock = (block) => {
                 <div>
                     <label htmlFor={id}>
                         <input type="checkbox" id={id} defaultChecked={value.checked}/>{" "}
-                        <Text text={value.text}/>
+                        <Text text={value.rich_text}/>
                     </label>
                 </div>
             );
@@ -50,7 +55,7 @@ export const renderBlock = (block) => {
             return (
                 <details>
                     <summary>
-                        <Text text={value.text}/>
+                        <Text text={value.rich_text}/>
                     </summary>
                     {value.children?.map((block) => (
                         <Fragment key={block.id}>{renderBlock(block)}</Fragment>

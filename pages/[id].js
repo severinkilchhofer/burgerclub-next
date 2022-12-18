@@ -65,9 +65,7 @@ export default function Post({restaurant, restaurantBlocks, bar, barBlocks}) {
                         </Swiper>
 
                     </div>
-                    <Link href="/">
-                        <a className="block py-8 font-display font-bold text-black">← Übersicht</a>
-                    </Link>
+                    <Link href="/" className="block py-8 font-display font-bold text-black">← Übersicht</Link>
                 </article>
             </Layout>
         </div>
