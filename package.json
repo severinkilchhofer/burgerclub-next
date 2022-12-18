@@ -8,7 +8,6 @@
     "start": "next start"
   },
   "dependencies": {
-    "@netlify/next": "^1.4.2",
     "@notionhq/client": "^2.2.2",
     "@uploadcare/react-widget": "^2.4.0",
     "dotenv": "^16.0.3",
