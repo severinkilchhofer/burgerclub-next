@@ -24,11 +24,7 @@ export default function upload() {
 
                 <ol className="pt-24 pb-24 space-y-6">
                     <li>1. Foto aufnehmen oder hochladen</li>
-                    <li>{`2. CDN Link kopieren: ${cdnLink}`}</li>
-                    {cdnLink ?
-                        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                                onClick={copyToClipboard}>In Zwischenablage kopieren</button>
-                        : ''}
+                    <li>{`2. CDN Link kopieren: ${cdnLink && cdnLink + '-/quality/smart_retina/'}`}</li>
                     <li>3. Zu Notion wechseln und einfügen als Embedded Image</li>
                 </ol>
                 <Link href="/" className="block py-8 font-bold text-black">← Zurück zur Übersicht</Link>

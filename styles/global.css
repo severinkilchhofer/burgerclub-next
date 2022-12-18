@@ -71,3 +71,9 @@ figure {
 figure img {
     @apply rounded-sm;
 }
+
+@layer base {
+    button,.button,input[type='button'],[type='button'],input[type='reset'],input[type='submit'] {
+        @apply bg-blue-500;
+    }
+}
