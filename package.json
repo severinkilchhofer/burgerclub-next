@@ -9,6 +9,8 @@
   },
   "dependencies": {
     "@notionhq/client": "^2.2.2",
+    "@splinetool/react-spline": "^2.2.6",
+    "@splinetool/runtime": "^0.9.325",
     "@uploadcare/react-widget": "^2.4.0",
     "dotenv": "^16.0.3",
     "framer-motion": "^7.6.19",
