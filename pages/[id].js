@@ -12,7 +12,6 @@ import {renderBlock} from "../components/render-block";
 import SegmentedControl from "../components/segmentedcontrol";
 
 export default function Post({restaurant, restaurantBlocks, bar, barBlocks}) {
-    const items = ['Restaurant', 'Bar']
     const [activeItem, setActiveitem] = useState(0)
     const [swiper, setSwiper] = useState(null);
 
@@ -30,8 +29,9 @@ export default function Post({restaurant, restaurantBlocks, bar, barBlocks}) {
             <Layout title={restaurant.properties.Restaurant.title[0].plain_text}>
 
                 <article className="container mx-auto px-4 sm:px-16 md:px-32 lg:px-64 max-w-7xl">
-                    <SegmentedControl activeItem={activeItem}
-                                      setActiveitem={(activeIndex) => setActiveitem(activeIndex)}/>
+                    <SegmentedControl
+                        activeItem={activeItem}
+                        setActiveitem={(activeIndex) => setActiveitem(activeIndex)}/>
 
                     <div
                         className="flex flex-row">
@@ -52,16 +52,18 @@ export default function Post({restaurant, restaurantBlocks, bar, barBlocks}) {
                                 </section>
                             </SwiperSlide>
 
-                            <SwiperSlide className="swiper-button-prev-unique">
-                                <section className="w-full h-auto">
-                                    <h1 className="pt-12 pb-4 md:pt-16">
-                                        <Text text={bar.properties.Name.title}/>
-                                    </h1>
-                                    {barBlocks.map((block) => (
-                                        <Fragment key={block.id}>{renderBlock(block)}</Fragment>
-                                    ))}
-                                </section>
-                            </SwiperSlide>
+                            {bar.properties ?
+                                <SwiperSlide className="swiper-button-prev-unique">
+                                    <section className="w-full h-auto">
+                                        <h1 className="pt-12 pb-4 md:pt-16">
+                                            <Text text={bar.properties.Name.title}/>
+                                        </h1>
+                                        {barBlocks.map((block) => (
+                                            <Fragment key={block.id}>{renderBlock(block)}</Fragment>
+                                        ))}
+                                    </section>
+                                </SwiperSlide>
+                                : ''}
                         </Swiper>
 
                     </div>
@@ -72,23 +74,18 @@ export default function Post({restaurant, restaurantBlocks, bar, barBlocks}) {
     );
 }
 
-export async function getStaticPaths() {
-    const restaurantDatabase = await getDatabase(RestaurantDatabaseId);
-    return {
-        paths: restaurantDatabase.map((restaurant) => {
-            return {params: {id: restaurant.id}}
-        }),
-        fallback: false,
-    };
-}
-
-export const getStaticProps = async (context) => {
+export const getServerSideProps = async (context) => {
     const {id} = context.params;
     const restaurant = await getPage(id);
     const barDatabase = await getDatabase(BarDatabaseId);
-    const bar = barDatabase.find(item => item.properties.Related_to_Restaurant.relation[0].id === restaurant.id)
+    const bar = barDatabase.find(item => item.properties.Related_to_Restaurant.relation[0] ? item.properties.Related_to_Restaurant.relation[0].id === restaurant.id : undefined)
     const restaurantBlocks = await getBlocks(id);
-    const barBlocks = await getBlocks(bar.id);
+
+    let barBlocks = [];
+
+    if (bar) {
+        barBlocks = await getBlocks(bar.id);
+    }
 
     // Retrieve block children for nested blocks (one level deep), for example toggle blocks
     // https://developers.notion.com/docs/working-with-page-content#reading-nested-blocks
@@ -118,13 +115,9 @@ export const getStaticProps = async (context) => {
     return {
         props: {
             restaurant,
-            bar,
+            bar: bar ? bar : [],
             restaurantBlocks: await receiveChildBlocks(restaurantBlocks),
             barBlocks: await receiveChildBlocks(barBlocks),
         },
-        // Next.js will attempt to re-generate the page:
-        // - When a request comes in
-        // - At most once every 1 second
-        revalidate: 1,
     };
 };
