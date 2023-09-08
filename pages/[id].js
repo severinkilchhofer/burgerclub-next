@@ -72,17 +72,7 @@ export default function Post({restaurant, restaurantBlocks, bar, barBlocks}) {
     );
 }
 
-export async function getStaticPaths() {
-    const restaurantDatabase = await getDatabase(RestaurantDatabaseId);
-    return {
-        paths: restaurantDatabase.map((restaurant) => {
-            return {params: {id: restaurant.id}}
-        }),
-        fallback: false,
-    };
-}
-
-export const getStaticProps = async (context) => {
+export const getServerSideProps = async (context) => {
     const {id} = context.params;
     const restaurant = await getPage(id);
     const barDatabase = await getDatabase(BarDatabaseId);
@@ -122,9 +112,5 @@ export const getStaticProps = async (context) => {
             restaurantBlocks: await receiveChildBlocks(restaurantBlocks),
             barBlocks: await receiveChildBlocks(barBlocks),
         },
-        // Next.js will attempt to re-generate the page:
-        // - When a request comes in
-        // - At most once every 1 second
-        revalidate: 1,
     };
 };
